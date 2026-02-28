@@ -1,0 +1,36 @@
+name: Bukkit Jar Build
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build-bukkit-jar:
+    name: Build Bukkit JAR
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up JDK
+        uses: actions/setup-java@v5
+        with:
+          java-version: 21
+          distribution: temurin
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v5
+        with:
+          cache-read-only: ${{ !(github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/heads/version/')) }}
+
+      - name: Build Bukkit distribution JAR
+        run: ./gradlew :worldedit-bukkit:shadowJar -x test -s
+
+      - name: Upload Bukkit JARs
+        uses: actions/upload-artifact@v6
+        with:
+          name: worldedit-bukkit-jars-${{ github.ref_name }}-${{ github.sha }}
+          path: worldedit-bukkit/build/libs/worldedit-bukkit-*.jar
+          if-no-files-found: error
+          retention-days: 30
