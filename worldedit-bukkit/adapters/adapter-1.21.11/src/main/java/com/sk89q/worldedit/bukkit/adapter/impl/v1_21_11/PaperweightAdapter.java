@@ -665,13 +665,20 @@ public final class PaperweightAdapter implements BukkitImplAdapter {
 
     @Override
     public BaseItemStack adapt(org.bukkit.inventory.ItemStack itemStack) {
-        var registryAccess = DedicatedServer.getServer().registryAccess();
-        final ItemStack nmsStack = CraftItemStack.asNMSCopy(itemStack);
-        CompoundTag tag = (CompoundTag) COMPONENTS_CODEC.encodeStart(
-                registryAccess.createSerializationContext(NbtOps.INSTANCE),
-                nmsStack.getComponentsPatch()
-        ).getOrThrow();
-        return new BaseItemStack(BukkitAdapter.asItemType(itemStack.getType()), LazyReference.from(() -> (LinCompoundTag) toNative(tag)), itemStack.getAmount());
+        final org.bukkit.inventory.ItemStack snapshot = itemStack.clone();
+        return new BaseItemStack(
+                BukkitAdapter.asItemType(snapshot.getType()),
+                LazyReference.from(() -> {
+                    var registryAccess = DedicatedServer.getServer().registryAccess();
+                    final ItemStack nmsStack = CraftItemStack.asNMSCopy(snapshot);
+                    CompoundTag tag = (CompoundTag) COMPONENTS_CODEC.encodeStart(
+                            registryAccess.createSerializationContext(NbtOps.INSTANCE),
+                            nmsStack.getComponentsPatch()
+                    ).getOrThrow();
+                    return (LinCompoundTag) toNative(tag);
+                }),
+                snapshot.getAmount()
+        );
     }
 
     private final LoadingCache<ServerLevel, PaperweightFakePlayer> fakePlayers

@@ -95,7 +95,7 @@ public abstract class AbstractPlayerActor implements Actor, Player, Cloneable {
 
     @Override
     public boolean isHoldingPickAxe() {
-        ItemType item = getItemInHand(HandSide.MAIN_HAND).getType();
+        ItemType item = getItemTypeInHand(HandSide.MAIN_HAND);
         return item == ItemTypes.IRON_PICKAXE
                 || item == ItemTypes.WOODEN_PICKAXE
                 || item == ItemTypes.STONE_PICKAXE
@@ -420,7 +420,7 @@ public abstract class AbstractPlayerActor implements Actor, Player, Cloneable {
 
     @Override
     public BaseBlock getBlockInHand(HandSide handSide) throws WorldEditException {
-        final ItemType typeId = getItemInHand(handSide).getType();
+        final ItemType typeId = getItemTypeInHand(handSide);
         if (typeId.hasBlockType()) {
             return typeId.getBlockType().getDefaultState().toBaseBlock();
         } else {

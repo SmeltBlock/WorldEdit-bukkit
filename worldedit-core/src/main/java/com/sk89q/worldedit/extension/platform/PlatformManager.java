@@ -418,7 +418,7 @@ public class PlatformManager {
                     }
                 }
 
-                Tool tool = session.getTool(player.getItemInHand(HandSide.MAIN_HAND).getType());
+                Tool tool = session.getTool(player.getItemTypeInHand(HandSide.MAIN_HAND));
                 if (tool instanceof DoubleActionBlockTool doubleActionBlockTool && tool.canUse(player)) {
                     if (doubleActionBlockTool.actSecondary(queryCapability(Capability.WORLD_EDITING),
                             getConfiguration(), player, session, location, event.getFace())) {
@@ -427,7 +427,7 @@ public class PlatformManager {
                 }
 
             } else if (event.getType() == Interaction.OPEN) {
-                Tool tool = session.getTool(player.getItemInHand(HandSide.MAIN_HAND).getType());
+                Tool tool = session.getTool(player.getItemTypeInHand(HandSide.MAIN_HAND));
                 if (tool instanceof BlockTool blockTool && tool.canUse(player)) {
                     if (blockTool.actPrimary(queryCapability(Capability.WORLD_EDITING),
                             getConfiguration(), player, session, location, event.getFace())) {
@@ -453,7 +453,7 @@ public class PlatformManager {
         try {
             exhaustive(switch (event.getInputType()) {
                 case PRIMARY -> {
-                    Tool tool = session.getTool(player.getItemInHand(HandSide.MAIN_HAND).getType());
+                    Tool tool = session.getTool(player.getItemTypeInHand(HandSide.MAIN_HAND));
                     if (tool instanceof DoubleActionTraceTool doubleActionTraceTool && tool.canUse(player)) {
                         if (doubleActionTraceTool.actSecondary(queryCapability(Capability.WORLD_EDITING),
                                 getConfiguration(), player, session)) {
@@ -464,7 +464,7 @@ public class PlatformManager {
                     yield dummyValue();
                 }
                 case SECONDARY -> {
-                    Tool tool = session.getTool(player.getItemInHand(HandSide.MAIN_HAND).getType());
+                    Tool tool = session.getTool(player.getItemTypeInHand(HandSide.MAIN_HAND));
                     if (tool instanceof TraceTool traceTool && tool.canUse(player)) {
                         if (traceTool.actPrimary(queryCapability(Capability.WORLD_EDITING),
                                 getConfiguration(), player, session)) {

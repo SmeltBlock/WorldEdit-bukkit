@@ -45,6 +45,7 @@ import com.sk89q.worldedit.world.block.BlockStateHolder;
 import com.sk89q.worldedit.world.block.BlockTypes;
 import com.sk89q.worldedit.world.gamemode.GameMode;
 import com.sk89q.worldedit.world.gamemode.GameModes;
+import com.sk89q.worldedit.world.item.ItemType;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -81,6 +82,14 @@ public class BukkitPlayer extends AbstractPlayerActor {
                 ? player.getInventory().getItemInMainHand()
                 : player.getInventory().getItemInOffHand();
         return BukkitAdapter.adapt(itemStack);
+    }
+
+    @Override
+    public ItemType getItemTypeInHand(HandSide handSide) {
+        ItemStack itemStack = handSide == HandSide.MAIN_HAND
+                ? player.getInventory().getItemInMainHand()
+                : player.getInventory().getItemInOffHand();
+        return BukkitAdapter.asItemType(itemStack.getType());
     }
 
     @Override

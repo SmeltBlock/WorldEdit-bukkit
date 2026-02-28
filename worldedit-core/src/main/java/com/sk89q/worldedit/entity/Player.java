@@ -35,6 +35,7 @@ import com.sk89q.worldedit.world.World;
 import com.sk89q.worldedit.world.block.BaseBlock;
 import com.sk89q.worldedit.world.block.BlockStateHolder;
 import com.sk89q.worldedit.world.gamemode.GameMode;
+import com.sk89q.worldedit.world.item.ItemType;
 
 import javax.annotation.Nullable;
 
@@ -71,6 +72,20 @@ public interface Player extends Entity, Actor {
      * @return the item the player is holding
      */
     BaseItemStack getItemInHand(HandSide handSide);
+
+    /**
+     * Get the type of item that the player is holding.
+     *
+     * <p>Platforms may override this to provide a cheaper implementation
+     * than adapting the full held stack, which is useful for hot paths
+     * that only need the item type.</p>
+     *
+     * @param handSide the hand side
+     * @return the held item type
+     */
+    default ItemType getItemTypeInHand(HandSide handSide) {
+        return getItemInHand(handSide).getType();
+    }
 
     /**
      * Get the Block that the player is holding.
