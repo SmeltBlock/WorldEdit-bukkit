@@ -21,13 +21,16 @@
 
 package com.sk89q.worldedit.bukkit;
 
+import com.sk89q.worldedit.LocalSession;
 import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.command.tool.Tool;
 import com.sk89q.worldedit.entity.Player;
 import com.sk89q.worldedit.event.platform.SessionIdleEvent;
 import com.sk89q.worldedit.internal.event.InteractionDebouncer;
 import com.sk89q.worldedit.util.Direction;
 import com.sk89q.worldedit.util.Location;
 import com.sk89q.worldedit.world.World;
+import com.sk89q.worldedit.world.item.ItemType;
 import org.bukkit.block.Block;
 import org.bukkit.event.Event.Result;
 import org.bukkit.event.EventHandler;
@@ -93,6 +96,18 @@ public class WorldEditListener implements Listener {
                 }
                 return;
             }
+        }
+
+        // Fast-path: when the held item has no usable WorldEdit tool and superpickaxe
+        // cannot apply for this interaction, skip the full WorldEdit event pipeline.
+        final LocalSession session = WorldEdit.getInstance().getSessionManager().get(player);
+        final ItemType handType = BukkitAdapter.asItemType(event.getPlayer().getInventory().getItemInMainHand().getType());
+        final Tool tool = handType == null ? null : session.getTool(handType);
+        final boolean superPickaxeCanApply = session.hasSuperPickAxe()
+                && (event.getAction() == Action.LEFT_CLICK_BLOCK || event.getAction() == Action.LEFT_CLICK_AIR)
+                && player.isHoldingPickAxe();
+        if ((tool == null || !tool.canUse(player)) && !superPickaxeCanApply) {
+            return;
         }
 
         final World world = player.getWorld();
